@@ -46,14 +46,14 @@ jobs:
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
           
           # Pull the new image
-          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            sudo docker pull ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           
           # Stop and remove the old container if it exists
-          docker stop app-container || true
-          docker rm app-container || true
+             sudo docker stop app-container || true
+             sudo docker rm app-container || true
           
           # Run the new container
-          docker run -d \
+          sudo docker run -d \
             --name app-container \
             -p 3000:3000 \
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
