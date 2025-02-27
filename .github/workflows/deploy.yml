@@ -1,14 +1,12 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   AWS_REGION: ap-southeast-2  # Change this to your AWS region
-  ECR_REPOSITORY: awsessentials/common  # Change this to your ECR repository name
-  EC2_HOST: your-ec2-host  # Change this to your EC2 host
+  ECR_REPOSITORY: ipsha-ecr-repo  # Change this to your ECR repository name
+  EC2_HOST: 13.236.204.94  # Change this to your EC2 host
 
 jobs:
   deploy:
