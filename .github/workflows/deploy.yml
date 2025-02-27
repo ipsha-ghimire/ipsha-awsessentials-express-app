@@ -39,7 +39,7 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ env.EC2_HOST }}
-        username: ipsha-test-instance  # Change this if your EC2 instance uses a different username
+        username: ec2-user   # Change this if your EC2 instance uses a different username
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           # Login to ECR
