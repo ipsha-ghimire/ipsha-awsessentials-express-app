@@ -34,26 +34,26 @@ jobs:
       run: |
         docker build -t $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-    # - name: Deploy to EC2
-    #   uses: appleboy/ssh-action@master
-    #   with:
-    #     host: ${{ env.EC2_HOST }}
-    #     username: ec2-user  # Change this if your EC2 instance uses a different username
-    #     key: ${{ secrets.EC2_SSH_KEY }}
-    #     script: |
-    #       # Login to ECR
-    #       aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+        #  ----------------------------------------the below code part deployes the docker image into an ec2 instance--------------------------------------------------------------------
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ipsha-test-instance  # Change this if your EC2 instance uses a different username
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # Login to ECR
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
           
-    #       # Pull the new image
-    #       docker pull ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          # Pull the new image
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           
-    #       # Stop and remove the old container if it exists
-    #       docker stop app-container || true
-    #       docker rm app-container || true
+          # Stop and remove the old container if it exists
+          docker stop app-container || true
+          docker rm app-container || true
           
-    #       # Run the new container
-    #       docker run -d \
-    #         --name app-container \
-    #         -p 3000:3000 \
-    #         ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          # Run the new container
+          docker run -d \
+            --name app-container \
+            -p 3000:3000 \
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
